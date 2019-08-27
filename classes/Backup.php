@@ -2,6 +2,10 @@
 
 namespace Classes;
 
+use ZipArchive;
+use RecursiveIteratorIterator;
+use RecursiveDirectoryIterator;
+
 class Backup
 {
     private $file = __DIR__ . '/../server_file_backup_directory_list';
@@ -104,5 +108,55 @@ class Backup
         }
 
         return false;
+    }
+
+    /**
+     * Reset all the listed directories.
+     *
+     * @return bool
+     */
+    public function resetDirectories()
+    {
+        $file = fopen($this->file, 'w');
+        fclose($file);
+
+        return true;
+    }
+
+    /**
+     * Make a zip archive.
+     *
+     * @return void
+     */
+    public function start()
+    {
+        $zip = new ZipArchive;
+        $directories = $this->getDirectories();
+
+        if (count($directories) > 0) {
+            foreach ($directories as $directory) {
+                $filename = explode('/', $directory);
+                $filename = $filename[count($filename) - 1];
+
+                $zip->open($filename . '.zip', ZipArchive::CREATE|ZipArchive::OVERWRITE);
+
+                $files = new RecursiveIteratorIterator(
+                    new RecursiveDirectoryIterator($directory),
+                    RecursiveIteratorIterator::LEAVES_ONLY
+                );
+
+                foreach ($files as $name => $file) {
+                    if (! $file->isDir())
+                    {
+                        $filePath = $file->getRealPath();
+                        $relativePath = substr($filePath, strlen($directory) + 1);
+
+                        $zip->addFile($filePath, $relativePath);
+                    }
+                }
+            }
+
+            $zip->close();
+        }
     }
 }
