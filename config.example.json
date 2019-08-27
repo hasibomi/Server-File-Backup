@@ -1,0 +1,10 @@
+{
+  "email": {
+    "driver": "smtp",
+    "host": "smtp.example.com",
+    "port": "587",
+    "username": "hello@example.com",
+    "password": "asdasd",
+    "from": "hello@example.com"
+  }
+}
