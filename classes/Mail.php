@@ -16,7 +16,7 @@ class Mail
 
     public function __construct()
     {
-        $config = json_decode(__DIR__ . '/../config.json', true);
+        $config = json_decode(file_get_contents(__DIR__ . '/../config.json'), true);
 
         $this->from = array($config['mail']['from']);
         $this->transport = (new Swift_SmtpTransport($config['mail']['host'], config['mail']['port']))
