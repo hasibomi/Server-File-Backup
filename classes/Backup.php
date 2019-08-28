@@ -126,10 +126,11 @@ class Backup
     /**
      * Make a zip archive.
      *
-     * @return void
+     * @return array
      */
     public function start()
     {
+        $archieves = array();
         $zip = new ZipArchive;
         $directories = $this->getDirectories();
         $current_timestamp = strtotime('now');
@@ -137,9 +138,11 @@ class Backup
         if (count($directories) > 0) {
             foreach ($directories as $directory) {
                 $filename = explode('/', $directory);
-                $filename = $filename[count($filename) - 1];
+                $filename = $filename[count($filename) - 1] . '_' . $current_timestamp . '.zip';
 
-                $zip->open($filename . '_' . $current_timestamp . '.zip', ZipArchive::CREATE|ZipArchive::OVERWRITE);
+                array_push($archieves, $filename);
+
+                $zip->open($filename, ZipArchive::CREATE|ZipArchive::OVERWRITE);
 
                 $files = new RecursiveIteratorIterator(
                     new RecursiveDirectoryIterator($directory),
@@ -159,5 +162,7 @@ class Backup
 
             $zip->close();
         }
+
+        return $archieves;
     }
 }
