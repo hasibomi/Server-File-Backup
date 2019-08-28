@@ -76,7 +76,7 @@ function show_available_commands($commands) {
 }
 
 function upload($files) {
-    $config = json_decode(file_get_contents('config.json'), true);
+    $config = json_decode(file_get_contents(__DIR__ . '/config.json'), true);
     $bucket = $config['aws']['bucket'];
 
     foreach ($files as $file) {
