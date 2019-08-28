@@ -132,13 +132,14 @@ class Backup
     {
         $zip = new ZipArchive;
         $directories = $this->getDirectories();
+        $current_timestamp = strtotime('now');
 
         if (count($directories) > 0) {
             foreach ($directories as $directory) {
                 $filename = explode('/', $directory);
                 $filename = $filename[count($filename) - 1];
 
-                $zip->open($filename . '.zip', ZipArchive::CREATE|ZipArchive::OVERWRITE);
+                $zip->open($filename . '_' . $current_timestamp . '.zip', ZipArchive::CREATE|ZipArchive::OVERWRITE);
 
                 $files = new RecursiveIteratorIterator(
                     new RecursiveDirectoryIterator($directory),
