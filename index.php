@@ -103,9 +103,12 @@ function upload($files) {
         try {
             $result = $uploader->upload();
             echo "Upload complete: {$result['ObjectURL']}" . PHP_EOL;
-            unlink($file);
         } catch (MultipartUploadException $e) {
             echo $e->getMessage() . PHP_EOL;
+        }
+
+        if (file_exists($file)) {
+            unlink($file);
         }
     }
 }
