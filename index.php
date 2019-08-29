@@ -24,52 +24,48 @@ array_shift($argv);
 
 foreach ($argv as $arg) {
     if (in_array($arg, $commands)) {
-        if ($arg === $commands[5]) {
+        $key = array_search($arg, $argv);
+        $value = '';
 
-        } else {
-            $key = array_search($arg, $argv);
-            $value = '';
+        if (array_key_exists($key + 1, $argv)) {
+            $value = $argv[$key + 1];
+        }
 
-            if (array_key_exists($key + 1, $argv)) {
-                $value = $argv[$key + 1];
-            }
+        switch ($arg) {
+            case $commands[0]:
+                $backup->setDirectory($value);
+                break;
+            case $commands[1]:
+                echo join(",\n", $backup->getDirectories());
+                break;
+            case $commands[2]:
+                echo $backup->searchDirectory($value);
+                break;
+            case $commands[3]:
+                if ($backup->deleteDirectory($value)) {
+                    echo 'Directory removed';
+                } else {
+                    echo 'Could not find the directory';
+                }
 
-            switch ($arg) {
-                case $commands[0]:
-                    $backup->setDirectory($value);
-                    break;
-                case $commands[1]:
-                    echo join(",\n", $backup->getDirectories());
-                    break;
-                case $commands[2]:
-                    echo $backup->searchDirectory($value);
-                    break;
-                case $commands[3]:
-                    if ($backup->deleteDirectory($value)) {
-                        echo 'Directory removed';
-                    } else {
-                        echo 'Could not find the directory';
-                    }
+                break;
+            case $commands[4]:
+                $backup->resetDirectories();
+                echo 'Directory list reset';
+                break;
+            case $commands[5]:
+                $files = $backup->start();
 
-                    break;
-                case $commands[4]:
-                    $backup->resetDirectories();
-                    echo 'Directory list reset';
-                    break;
-                case $commands[5]:
-                    $files = $backup->start();
+                if (count($files) > 0) {
+                    upload($files);
+                    echo 'Done';
+                } else {
+                    echo 'No backups are created';
+                }
 
-                    if (count($files) > 0) {
-                        upload($files);
-                        echo 'Done';
-                    } else {
-                        echo 'No backups are created';
-                    }
-
-                    break;
-                default:
-                    show_available_commands($commands);
-            }
+                break;
+            default:
+                show_available_commands($commands);
         }
     } else {
         show_available_commands($commands);
