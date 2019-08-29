@@ -25,17 +25,14 @@ array_shift($argv);
 foreach ($argv as $arg) {
     if (in_array($arg, $commands)) {
         if ($arg === $commands[5]) {
-            $files = $backup->start();
 
-            if (count($files) > 0) {
-                upload($files);
-                echo 'Done';
-            } else {
-                echo 'No backups are created';
-            }
         } else {
             $key = array_search($arg, $argv);
-            $value = $argv[$key + 1];
+            $value = '';
+
+            if (array_key_exists($key + 1, $argv)) {
+                $value = $argv[$key + 1];
+            }
 
             switch ($arg) {
                 case $commands[0]:
@@ -58,6 +55,17 @@ foreach ($argv as $arg) {
                 case $commands[4]:
                     $backup->resetDirectories();
                     echo 'Directory list reset';
+                    break;
+                case $commands[5]:
+                    $files = $backup->start();
+
+                    if (count($files) > 0) {
+                        upload($files);
+                        echo 'Done';
+                    } else {
+                        echo 'No backups are created';
+                    }
+
                     break;
                 default:
                     show_available_commands($commands);
